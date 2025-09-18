@@ -15,13 +15,13 @@ document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', 
 
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
+    anchor.addEventListener('click', function(e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
             const navHeight = document.querySelector('.navbar').offsetHeight;
             const targetPosition = target.offsetTop - navHeight;
-            
+
             window.scrollTo({
                 top: targetPosition,
                 behavior: 'smooth'
@@ -67,32 +67,32 @@ const contactForm = document.querySelector('.contact-form');
 if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         // Get form data
         const formData = new FormData(this);
         const name = formData.get('name');
         const email = formData.get('email');
         const subject = formData.get('subject');
         const message = formData.get('message');
-        
+
         // Basic validation
         if (!name || !email || !subject || !message) {
             showNotification('Please fill in all fields.', 'error');
             return;
         }
-        
+
         if (!isValidEmail(email)) {
             showNotification('Please enter a valid email address.', 'error');
             return;
         }
-        
+
         // Simulate form submission
         const submitButton = this.querySelector('button[type="submit"]');
         const originalText = submitButton.textContent;
-        
+
         submitButton.textContent = 'Sending...';
         submitButton.disabled = true;
-        
+
         // Simulate API call
         setTimeout(() => {
             showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
@@ -114,7 +114,7 @@ function showNotification(message, type = 'info') {
     // Remove existing notifications
     const existingNotifications = document.querySelectorAll('.notification');
     existingNotifications.forEach(notification => notification.remove());
-    
+
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.innerHTML = `
@@ -123,22 +123,22 @@ function showNotification(message, type = 'info') {
             <button class="notification-close">&times;</button>
         </div>
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     // Auto remove after 5 seconds
     setTimeout(() => {
         if (notification.parentNode) {
             notification.remove();
         }
     }, 5000);
-    
+
     // Close button functionality
     const closeButton = notification.querySelector('.notification-close');
     closeButton.addEventListener('click', () => {
         notification.remove();
     });
-    
+
     // Show notification with animation
     setTimeout(() => {
         notification.classList.add('show');
@@ -149,7 +149,7 @@ function showNotification(message, type = 'info') {
 function typeWriter(element, text, speed = 100) {
     let i = 0;
     element.innerHTML = '';
-    
+
     function type() {
         if (i < text.length) {
             element.innerHTML += text.charAt(i);
@@ -157,7 +157,7 @@ function typeWriter(element, text, speed = 100) {
             setTimeout(type, speed);
         }
     }
-    
+
     type();
 }
 
@@ -173,12 +173,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // Skill tags hover effect
 document.addEventListener('DOMContentLoaded', () => {
     const skillTags = document.querySelectorAll('.skill-tag');
-    
+
     skillTags.forEach(tag => {
         tag.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-2px) scale(1.05)';
         });
-        
+
         tag.addEventListener('mouseleave', function() {
             this.style.transform = 'translateY(0) scale(1)';
         });
@@ -188,22 +188,22 @@ document.addEventListener('DOMContentLoaded', () => {
 // Project cards 3D effect
 document.addEventListener('DOMContentLoaded', () => {
     const projectCards = document.querySelectorAll('.project-card');
-    
+
     projectCards.forEach(card => {
         card.addEventListener('mousemove', function(e) {
             const rect = this.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
+
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            
+
             const rotateX = (y - centerY) / 10;
             const rotateY = (centerX - x) / 10;
-            
+
             this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
         });
-        
+
         card.addEventListener('mouseleave', function() {
             this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
         });
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function animateCounter(element, target, duration = 2000) {
     let start = 0;
     const increment = target / (duration / 16);
-    
+
     function updateCounter() {
         start += increment;
         if (start < target) {
@@ -224,7 +224,7 @@ function animateCounter(element, target, duration = 2000) {
             element.textContent = target + '+';
         }
     }
-    
+
     updateCounter();
 }
 
@@ -234,7 +234,7 @@ const statsObserver = new IntersectionObserver((entries) => {
         if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
             const target = entry.target.querySelector('h3');
             const value = parseInt(target.textContent);
-            
+
             animateCounter(target, value);
             entry.target.classList.add('animated');
         }
@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('scroll', () => {
     const scrolled = window.pageYOffset;
     const parallax = document.querySelector('.hero');
-    
+
     if (parallax) {
         const speed = scrolled * 0.5;
         parallax.style.transform = `translateY(${speed}px)`;
@@ -426,7 +426,7 @@ const debouncedScrollHandler = debounce(() => {
         navbar.style.background = 'rgba(255, 255, 255, 0.95)';
         navbar.style.boxShadow = 'none';
     }
-    
+
     // Parallax effect
     const scrolled = window.pageYOffset;
     const parallax = document.querySelector('.hero');
