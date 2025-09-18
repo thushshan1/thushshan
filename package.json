@@ -1,0 +1,69 @@
+{
+  "name": "thushshan-resume-website",
+  "version": "1.0.0",
+  "description": "Professional resume website for Thushshan Rameswaran - Business Analyst & Software Developer",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx live-server --port=3000 --open=/index.html",
+    "build": "npm run minify:css && npm run minify:js && npm run optimize:html",
+    "minify:css": "npx cleancss -o dist/style.min.css style.css",
+    "minify:js": "npx terser script.js -o dist/script.min.js -c -m",
+    "optimize:html": "npx html-minifier --collapse-whitespace --remove-comments --minify-css --minify-js --output dist/index.html index.html",
+    "test": "npm run test:html && npm run test:css && npm run test:js && npm run test:lighthouse",
+    "test:html": "npx html-validate index.html",
+    "test:css": "npx stylelint style.css",
+    "test:js": "npx eslint script.js",
+    "test:lighthouse": "npx lighthouse-ci autorun",
+    "lint": "npm run lint:html && npm run lint:css && npm run lint:js",
+    "lint:html": "npx html-validate index.html --formatter stylish",
+    "lint:css": "npx stylelint style.css --formatter verbose",
+    "lint:js": "npx eslint script.js --format stylish",
+    "lint:fix": "npx eslint script.js --fix && npx stylelint style.css --fix",
+    "deploy": "npm run build && npx gh-pages -d dist",
+    "preview": "npx live-server dist --port=8080 --open=/index.html",
+    "clean": "rimraf dist",
+    "prepare-dist": "mkdir -p dist && cp -r *.html *.css *.js dist/",
+    "security:audit": "npm audit --audit-level=moderate",
+    "performance:test": "npx lighthouse http://localhost:3000 --output=html --output-path=reports/lighthouse.html --chrome-flags=\"--headless\""
+  },
+  "keywords": [
+    "resume",
+    "portfolio",
+    "website",
+    "business-analyst",
+    "software-developer",
+    "thushshan-rameswaran"
+  ],
+  "author": {
+    "name": "Thushshan Rameswaran",
+    "email": "thushshan123@gmail.com",
+    "url": "https://www.linkedin.com/in/thushshan-rameswaran/"
+  },
+  "license": "MIT",
+  "homepage": "https://thushshan-rameswaran.github.io/resume-website",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thushshan-rameswaran/resume-website.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thushshan-rameswaran/resume-website/issues"
+  },
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "eslint": "^8.57.0",
+    "gh-pages": "^6.1.1",
+    "html-minifier": "^4.0.0",
+    "html-validate": "^8.18.1",
+    "lighthouse": "^11.7.1",
+    "lighthouse-ci": "^0.12.0",
+    "live-server": "^1.2.2",
+    "rimraf": "^5.0.5",
+    "stylelint": "^16.3.1",
+    "stylelint-config-standard": "^36.0.0",
+    "terser": "^5.29.1"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
