@@ -58,8 +58,31 @@ const observer = new IntersectionObserver((entries) => {
 
 // Observe elements for animation
 document.addEventListener('DOMContentLoaded', () => {
-    const animateElements = document.querySelectorAll('.timeline-item, .project-card, .skill-category, .education-card, .stat');
+    const animateElements = document.querySelectorAll('.timeline-item, .project-card, .skill-category, .education-card, .stat, .achievement-card');
     animateElements.forEach(el => observer.observe(el));
+    
+    // Resume download analytics (track downloads)
+    const downloadBtn = document.querySelector('.btn-download');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', function() {
+            // Track download event for analytics
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'download', {
+                    'event_category': 'Resume',
+                    'event_label': 'PDF Download'
+                });
+            }
+            showNotification('Resume download started! Thank you for your interest.', 'success');
+        });
+    }
+    
+    // Enhanced profile photo functionality
+    const profileImg = document.getElementById('profile-img');
+    if (profileImg) {
+        profileImg.addEventListener('click', function() {
+            showNotification('Click here to upload your professional photo!', 'info');
+        });
+    }
 });
 
 // Contact form handling
@@ -86,14 +109,30 @@ if (contactForm) {
             return;
         }
 
-        // Simulate form submission
+        // Enhanced form submission with EmailJS integration
         const submitButton = this.querySelector('button[type="submit"]');
         const originalText = submitButton.textContent;
-
+        
         submitButton.textContent = 'Sending...';
         submitButton.disabled = true;
-
-        // Simulate API call
+        
+        // In a real implementation, you would integrate with EmailJS:
+        // emailjs.send('service_id', 'template_id', {
+        //     from_name: name,
+        //     from_email: email,
+        //     subject: subject,
+        //     message: message
+        // }).then(() => {
+        //     showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
+        //     this.reset();
+        // }).catch(() => {
+        //     showNotification('Failed to send message. Please try again.', 'error');
+        // }).finally(() => {
+        //     submitButton.textContent = originalText;
+        //     submitButton.disabled = false;
+        // });
+        
+        // For now, simulate successful submission
         setTimeout(() => {
             showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
             this.reset();
@@ -161,12 +200,47 @@ function typeWriter(element, text, speed = 100) {
     type();
 }
 
-// Initialize typing animation when page loads
+// Enhanced typing animation for subtitle
+function typeWriterCycle(element, words, speed = 100) {
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    
+    function type() {
+        const currentWord = words[wordIndex];
+        
+        if (isDeleting) {
+            element.textContent = currentWord.substring(0, charIndex - 1);
+            charIndex--;
+        } else {
+            element.textContent = currentWord.substring(0, charIndex + 1);
+            charIndex++;
+        }
+        
+        let typeSpeed = speed;
+        if (isDeleting) typeSpeed /= 2;
+        
+        if (!isDeleting && charIndex === currentWord.length) {
+            typeSpeed = 2000; // Pause at end
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            wordIndex = (wordIndex + 1) % words.length;
+            typeSpeed = 500; // Pause before next word
+        }
+        
+        setTimeout(type, typeSpeed);
+    }
+    
+    type();
+}
+
+// Initialize enhanced typing animation
 document.addEventListener('DOMContentLoaded', () => {
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-        const originalText = heroTitle.textContent;
-        typeWriter(heroTitle, originalText, 80);
+    const typingElement = document.querySelector('.typing-text');
+    if (typingElement) {
+        const words = typingElement.getAttribute('data-words').split(',');
+        typeWriterCycle(typingElement, words, 80);
     }
 });
 
@@ -234,16 +308,35 @@ const statsObserver = new IntersectionObserver((entries) => {
         if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
             const target = entry.target.querySelector('h3');
             const value = parseInt(target.textContent);
-
+            
             animateCounter(target, value);
             entry.target.classList.add('animated');
         }
     });
 }, { threshold: 0.5 });
 
+// Skill bars animation
+const skillObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const skillFills = entry.target.querySelectorAll('.skill-fill');
+            skillFills.forEach((fill, index) => {
+                setTimeout(() => {
+                    const width = fill.getAttribute('data-width');
+                    fill.style.width = width;
+                }, index * 200);
+            });
+        }
+    });
+}, { threshold: 0.3 });
+
 document.addEventListener('DOMContentLoaded', () => {
     const stats = document.querySelectorAll('.stat');
     stats.forEach(stat => statsObserver.observe(stat));
+    
+    // Observe skill categories for progress bar animation
+    const skillCategories = document.querySelectorAll('.skill-category');
+    skillCategories.forEach(category => skillObserver.observe(category));
 });
 
 // Parallax effect disabled to fix scrolling layout issues
@@ -257,10 +350,17 @@ document.addEventListener('DOMContentLoaded', () => {
 //     }
 // });
 
-// Dark mode toggle (optional feature)
+// Dark mode toggle functionality
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
-    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDarkMode);
+    
+    // Update theme toggle icon
+    const themeToggle = document.querySelector('#theme-toggle i');
+    if (themeToggle) {
+        themeToggle.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
+    }
 }
 
 // Load dark mode preference
@@ -268,6 +368,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const darkModePreference = localStorage.getItem('darkMode');
     if (darkModePreference === 'true') {
         document.body.classList.add('dark-mode');
+        const themeToggle = document.querySelector('#theme-toggle i');
+        if (themeToggle) {
+            themeToggle.className = 'fas fa-sun';
+        }
+    }
+    
+    // Add theme toggle event listener
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleDarkMode);
     }
 });
 
@@ -437,3 +547,124 @@ const debouncedScrollHandler = debounce(() => {
 }, 10);
 
 window.addEventListener('scroll', debouncedScrollHandler);
+
+// Scroll progress indicator
+function updateScrollProgress() {
+    const scrollTop = window.pageYOffset;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const scrollPercent = (scrollTop / docHeight) * 100;
+    
+    const progressBar = document.getElementById('progress-bar');
+    if (progressBar) {
+        progressBar.style.width = scrollPercent + '%';
+    }
+    
+    // Back to top button
+    const backToTop = document.getElementById('back-to-top');
+    if (backToTop) {
+        if (scrollTop > 300) {
+            backToTop.classList.add('show');
+        } else {
+            backToTop.classList.remove('show');
+        }
+    }
+}
+
+// Back to top functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const backToTop = document.getElementById('back-to-top');
+    if (backToTop) {
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+});
+
+window.addEventListener('scroll', updateScrollProgress);
+
+// Enhanced skill tags interaction
+document.addEventListener('DOMContentLoaded', () => {
+    const skillTags = document.querySelectorAll('.skill-tag, .tech-tag');
+    
+    skillTags.forEach(tag => {
+        tag.addEventListener('click', function() {
+            // Add click animation
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+            
+            // Show skill info (could be expanded to show more details)
+            const skillName = this.textContent;
+            showNotification(`${skillName} - Click to learn more about my experience!`, 'info');
+        });
+    });
+});
+
+
+// Enhanced project card interactions
+document.addEventListener('DOMContentLoaded', () => {
+    const projectCards = document.querySelectorAll('.project-card');
+    
+    projectCards.forEach(card => {
+        const details = card.querySelector('.project-details');
+        const toggleBtn = document.createElement('button');
+        toggleBtn.textContent = 'Show Details';
+        toggleBtn.className = 'details-toggle';
+        toggleBtn.style.cssText = `
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        `;
+        
+        if (details) {
+            details.style.display = 'none';
+            card.querySelector('.project-content').appendChild(toggleBtn);
+            
+            toggleBtn.addEventListener('click', () => {
+                const isHidden = details.style.display === 'none';
+                details.style.display = isHidden ? 'block' : 'none';
+                toggleBtn.textContent = isHidden ? 'Hide Details' : 'Show Details';
+            });
+        }
+    });
+});
+
+// Add structured data for SEO
+document.addEventListener('DOMContentLoaded', () => {
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Thushshan Rameswaran",
+        "jobTitle": "Management and IT Graduate",
+        "alumniOf": {
+            "@type": "University",
+            "name": "University of Toronto"
+        },
+        "email": "thushshan123@gmail.com",
+        "telephone": "647-809-3316",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Toronto",
+            "addressRegion": "ON"
+        },
+        "url": "https://thushshan1.github.io/thushshan",
+        "sameAs": [
+            "https://www.linkedin.com/in/thushshan-rameswaran/"
+        ]
+    };
+    
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+});
