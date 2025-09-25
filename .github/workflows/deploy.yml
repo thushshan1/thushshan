@@ -35,17 +35,17 @@ jobs:
         cat > build.js << 'EOF'
         const fs = require('fs');
         
-        // Read the original files
+        # Read the original files
         let indexHtml = fs.readFileSync('index.html', 'utf8');
         let scriptJs = fs.readFileSync('script.js', 'utf8');
         
-        // Replace placeholders with environment variables
+        # Replace placeholders with environment variables
         indexHtml = indexHtml.replace('YOUR_PUBLIC_KEY', process.env.EMAILJS_PUBLIC_KEY);
         scriptJs = scriptJs.replace('YOUR_SERVICE_ID', process.env.EMAILJS_SERVICE_ID);
         scriptJs = scriptJs.replace('YOUR_TEMPLATE_ID', process.env.EMAILJS_TEMPLATE_ID);
         scriptJs = scriptJs.replace('YOUR_PUBLIC_KEY', process.env.EMAILJS_PUBLIC_KEY);
         
-        // Write the processed files
+        # Write the processed files
         fs.writeFileSync('index.html', indexHtml);
         fs.writeFileSync('script.js', scriptJs);
         
