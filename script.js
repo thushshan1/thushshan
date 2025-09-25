@@ -246,16 +246,16 @@ document.addEventListener('DOMContentLoaded', () => {
     stats.forEach(stat => statsObserver.observe(stat));
 });
 
-// Parallax effect for hero section
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const parallax = document.querySelector('.hero');
-
-    if (parallax) {
-        const speed = scrolled * 0.5;
-        parallax.style.transform = `translateY(${speed}px)`;
-    }
-});
+// Parallax effect disabled to fix scrolling layout issues
+// window.addEventListener('scroll', () => {
+//     const scrolled = window.pageYOffset;
+//     const parallax = document.querySelector('.hero');
+//     
+//     if (parallax) {
+//         const speed = scrolled * 0.5;
+//         parallax.style.transform = `translateY(${speed}px)`;
+//     }
+// });
 
 // Dark mode toggle (optional feature)
 function toggleDarkMode() {

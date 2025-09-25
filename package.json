@@ -1,7 +1,7 @@
 {
   "name": "thushshan-resume-website",
   "version": "1.0.0",
-  "description": "Professional resume website for Thushshan Rameswaran - Business Analyst & Software Developer",
+  "description": "Professional resume website for Thushshan Rameswaran - Management and IT Graduate",
   "main": "index.html",
   "scripts": {
     "start": "npx live-server --port=3000 --open=/index.html",

@@ -122,7 +122,8 @@ body {
     padding: 120px 0 80px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    overflow: hidden;
+    position: relative;
+    z-index: 1;
 }
 
 .hero-container {
@@ -258,6 +259,8 @@ section {
 /* About Section */
 .about {
     background-color: var(--bg-secondary);
+    position: relative;
+    z-index: 2;
 }
 
 .about-content {
