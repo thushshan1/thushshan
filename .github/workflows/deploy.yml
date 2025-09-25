@@ -31,42 +31,21 @@ jobs:
         EMAILJS_TEMPLATE_ID: ${{ secrets.EMAILJS_TEMPLATE_ID }}
         EMAILJS_PUBLIC_KEY: ${{ secrets.EMAILJS_PUBLIC_KEY }}
       run: |
-        echo "🔍 DEBUG: Starting secret injection process..."
-        echo "🔍 DEBUG: Checking if secrets are available..."
-        echo "EMAILJS_SERVICE_ID length: ${#EMAILJS_SERVICE_ID}"
-        echo "EMAILJS_TEMPLATE_ID length: ${#EMAILJS_TEMPLATE_ID}"
-        echo "EMAILJS_PUBLIC_KEY length: ${#EMAILJS_PUBLIC_KEY}"
-        
         # Create build script
         cat > build.js << 'EOF'
         const fs = require('fs');
         
-        console.log('🔍 DEBUG: Starting build script...');
-        console.log('🔍 DEBUG: Environment variables available:');
-        console.log('EMAILJS_SERVICE_ID:', process.env.EMAILJS_SERVICE_ID ? 'SET' : 'NOT SET');
-        console.log('EMAILJS_TEMPLATE_ID:', process.env.EMAILJS_TEMPLATE_ID ? 'SET' : 'NOT SET');
-        console.log('EMAILJS_PUBLIC_KEY:', process.env.EMAILJS_PUBLIC_KEY ? 'SET' : 'NOT SET');
-        
         // Read the original files
-        console.log('🔍 DEBUG: Reading original files...');
         let indexHtml = fs.readFileSync('index.html', 'utf8');
         let scriptJs = fs.readFileSync('script.js', 'utf8');
         
-        console.log('🔍 DEBUG: Original index.html contains YOUR_PUBLIC_KEY:', indexHtml.includes('YOUR_PUBLIC_KEY'));
-        console.log('🔍 DEBUG: Original script.js contains YOUR_SERVICE_ID:', scriptJs.includes('YOUR_SERVICE_ID'));
-        
         // Replace placeholders with environment variables
-        console.log('🔍 DEBUG: Replacing placeholders...');
         indexHtml = indexHtml.replace('YOUR_PUBLIC_KEY', process.env.EMAILJS_PUBLIC_KEY);
         scriptJs = scriptJs.replace('YOUR_SERVICE_ID', process.env.EMAILJS_SERVICE_ID);
         scriptJs = scriptJs.replace('YOUR_TEMPLATE_ID', process.env.EMAILJS_TEMPLATE_ID);
         scriptJs = scriptJs.replace('YOUR_PUBLIC_KEY', process.env.EMAILJS_PUBLIC_KEY);
         
-        console.log('🔍 DEBUG: After replacement - index.html contains YOUR_PUBLIC_KEY:', indexHtml.includes('YOUR_PUBLIC_KEY'));
-        console.log('🔍 DEBUG: After replacement - script.js contains YOUR_SERVICE_ID:', scriptJs.includes('YOUR_SERVICE_ID'));
-        
         // Write the processed files
-        console.log('🔍 DEBUG: Writing processed files...');
         fs.writeFileSync('index.html', indexHtml);
         fs.writeFileSync('script.js', scriptJs);
         
@@ -74,14 +53,7 @@ jobs:
         EOF
         
         # Run the build script
-        echo "🔍 DEBUG: Running build script..."
         node build.js
-        
-        echo "🔍 DEBUG: Checking processed files..."
-        echo "Processed index.html contains YOUR_PUBLIC_KEY:"
-        grep -c "YOUR_PUBLIC_KEY" index.html || echo "0"
-        echo "Processed script.js contains YOUR_SERVICE_ID:"
-        grep -c "YOUR_SERVICE_ID" script.js || echo "0"
         
     - name: Setup Pages
       uses: actions/configure-pages@v4
