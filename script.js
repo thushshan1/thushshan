@@ -139,6 +139,20 @@ if (contactForm) {
             // ignore if already initialized
         }
 
+        // Debug logging
+        console.log('🔍 DEBUG: EmailJS configuration:');
+        console.log('EMAILJS_SERVICE_ID:', EMAILJS_SERVICE_ID);
+        console.log('EMAILJS_TEMPLATE_ID:', EMAILJS_TEMPLATE_ID);
+        console.log('EMAILJS_PUBLIC_KEY:', EMAILJS_PUBLIC_KEY);
+        console.log('🔍 DEBUG: EmailJS available:', !!window.emailjs);
+        console.log('🔍 DEBUG: emailjs.send function available:', !!(window.emailjs && typeof emailjs.send === 'function'));
+        console.log('🔍 DEBUG: Data being sent:', {
+            from_name: name,
+            from_email: email,
+            subject: subject,
+            message: message
+        });
+
         // Send email via EmailJS
         if (window.emailjs && typeof emailjs.send === 'function') {
             emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
@@ -147,16 +161,20 @@ if (contactForm) {
                 subject: subject,
                 message: message
             }).then(() => {
+                console.log('🔍 DEBUG: EmailJS send successful!');
                 showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
                 this.reset();
             }).catch((error) => {
-                console.error('EmailJS error:', error);
+                console.error('🔍 DEBUG: EmailJS error details:', error);
+                console.error('🔍 DEBUG: Error status:', error.status);
+                console.error('🔍 DEBUG: Error text:', error.text);
                 showNotification('Failed to send message. Please try again later.', 'error');
             }).finally(() => {
                 submitButton.textContent = originalText;
                 submitButton.disabled = false;
             });
         } else {
+            console.error('🔍 DEBUG: EmailJS not available or send function missing');
             showNotification('Email service is unavailable. Please try again later.', 'error');
             submitButton.textContent = originalText;
             submitButton.disabled = false;
