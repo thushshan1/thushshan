@@ -30,17 +30,21 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Navbar background on scroll
-window.addEventListener('scroll', () => {
+// Consolidated scroll handler for better performance
+function handleScroll() {
     const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
+    
+    // Navbar background on scroll (class-based to respect themes)
     if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-        navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+        navbar.classList.add('scrolled');
     } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-        navbar.style.boxShadow = 'none';
+        navbar.classList.remove('scrolled');
     }
-});
+    
+    // Update scroll progress
+    updateScrollProgress();
+}
 
 // Intersection Observer for animations
 const observerOptions = {
@@ -85,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Contact form handling
+// Contact form handling with EmailJS
 const contactForm = document.querySelector('.contact-form');
 if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
@@ -97,6 +101,13 @@ if (contactForm) {
         const email = formData.get('email');
         const subject = formData.get('subject');
         const message = formData.get('message');
+        const honeypot = formData.get('_hp');
+
+        // Honeypot spam check
+        if (honeypot) {
+            showNotification('Submission blocked. Please try again.', 'error');
+            return;
+        }
 
         // Basic validation
         if (!name || !email || !subject || !message) {
@@ -109,36 +120,47 @@ if (contactForm) {
             return;
         }
 
-        // Enhanced form submission with EmailJS integration
         const submitButton = this.querySelector('button[type="submit"]');
         const originalText = submitButton.textContent;
-        
         submitButton.textContent = 'Sending...';
         submitButton.disabled = true;
-        
-        // In a real implementation, you would integrate with EmailJS:
-        // emailjs.send('service_id', 'template_id', {
-        //     from_name: name,
-        //     from_email: email,
-        //     subject: subject,
-        //     message: message
-        // }).then(() => {
-        //     showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-        //     this.reset();
-        // }).catch(() => {
-        //     showNotification('Failed to send message. Please try again.', 'error');
-        // }).finally(() => {
-        //     submitButton.textContent = originalText;
-        //     submitButton.disabled = false;
-        // });
-        
-        // For now, simulate successful submission
-        setTimeout(() => {
-            showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-            this.reset();
+
+        // EmailJS configuration placeholders
+        const EMAILJS_SERVICE_ID = 'service_z7xkrdi';
+        const EMAILJS_TEMPLATE_ID = 'template_05cy9le';
+        const EMAILJS_PUBLIC_KEY = 'zvFCnJ4Z0w3tv5WYh';
+
+        // Ensure EmailJS is initialized
+        try {
+            if (window.emailjs && typeof emailjs.init === 'function') {
+                emailjs.init(EMAILJS_PUBLIC_KEY);
+            }
+        } catch (err) {
+            // ignore if already initialized
+        }
+
+        // Send email via EmailJS
+        if (window.emailjs && typeof emailjs.send === 'function') {
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                from_name: name,
+                from_email: email,
+                subject: subject,
+                message: message
+            }).then(() => {
+                showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
+                this.reset();
+            }).catch((error) => {
+                console.error('EmailJS error:', error);
+                showNotification('Failed to send message. Please try again later.', 'error');
+            }).finally(() => {
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            });
+        } else {
+            showNotification('Email service is unavailable. Please try again later.', 'error');
             submitButton.textContent = originalText;
             submitButton.disabled = false;
-        }, 2000);
+        }
     });
 }
 
@@ -156,12 +178,21 @@ function showNotification(message, type = 'info') {
 
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <span>${message}</span>
-            <button class="notification-close">&times;</button>
-        </div>
-    `;
+    // Create notification content safely to prevent XSS
+    const notificationContent = document.createElement('div');
+    notificationContent.className = 'notification-content';
+    
+    const messageSpan = document.createElement('span');
+    messageSpan.textContent = message; // Use textContent to prevent XSS
+    
+    const closeButton = document.createElement('button');
+    closeButton.className = 'notification-close';
+    closeButton.textContent = '×';
+    closeButton.setAttribute('aria-label', 'Close notification');
+    
+    notificationContent.appendChild(messageSpan);
+    notificationContent.appendChild(closeButton);
+    notification.appendChild(notificationContent);
 
     document.body.appendChild(notification);
 
@@ -173,7 +204,6 @@ function showNotification(message, type = 'info') {
     }, 5000);
 
     // Close button functionality
-    const closeButton = notification.querySelector('.notification-close');
     closeButton.addEventListener('click', () => {
         notification.remove();
     });
@@ -339,16 +369,6 @@ document.addEventListener('DOMContentLoaded', () => {
     skillCategories.forEach(category => skillObserver.observe(category));
 });
 
-// Parallax effect disabled to fix scrolling layout issues
-// window.addEventListener('scroll', () => {
-//     const scrolled = window.pageYOffset;
-//     const parallax = document.querySelector('.hero');
-//     
-//     if (parallax) {
-//         const speed = scrolled * 0.5;
-//         parallax.style.transform = `translateY(${speed}px)`;
-//     }
-// });
 
 // Dark mode toggle functionality
 function toggleDarkMode() {
@@ -525,27 +545,8 @@ function debounce(func, wait) {
     };
 }
 
-// Apply debouncing to scroll events
-const debouncedScrollHandler = debounce(() => {
-    // Navbar background on scroll
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-        navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
-    } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-        navbar.style.boxShadow = 'none';
-    }
-
-    // Parallax effect
-    const scrolled = window.pageYOffset;
-    const parallax = document.querySelector('.hero');
-    if (parallax) {
-        const speed = scrolled * 0.5;
-        parallax.style.transform = `translateY(${speed}px)`;
-    }
-}, 10);
-
+// Apply debouncing to consolidated scroll handler
+const debouncedScrollHandler = debounce(handleScroll, 16); // ~60fps
 window.addEventListener('scroll', debouncedScrollHandler);
 
 // Scroll progress indicator
@@ -583,7 +584,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-window.addEventListener('scroll', updateScrollProgress);
 
 // Enhanced skill tags interaction
 document.addEventListener('DOMContentLoaded', () => {
@@ -651,7 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
             "name": "University of Toronto"
         },
         "email": "thushshan123@gmail.com",
-        "telephone": "647-809-3316",
+        // "telephone": "REDACTED",
         "address": {
             "@type": "PostalAddress",
             "addressLocality": "Toronto",
