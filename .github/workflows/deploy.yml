@@ -1,27 +1,24 @@
-name: Deploy Resume Website with Secret Injection
+name: Build with Secret Injection
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         
-    - name: Install dependencies
-      run: npm install
-      
     - name: Build with secret injection
       env:
         EMAILJS_SERVICE_ID: ${{ secrets.EMAILJS_SERVICE_ID }}
@@ -31,7 +28,6 @@ jobs:
         # Create build script
         cat > build.js << 'EOF'
         const fs = require('fs');
-        const path = require('path');
         
         // Read the original files
         let indexHtml = fs.readFileSync('index.html', 'utf8');
@@ -53,10 +49,10 @@ jobs:
         # Run the build script
         node build.js
         
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      if: github.ref == 'refs/heads/main'
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./
-        cname: thushshan1.github.io
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git diff --staged --quiet || git commit -m "Build with secret injection"
+        git push
