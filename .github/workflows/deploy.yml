@@ -1,0 +1,61 @@
+name: Deploy Resume Website with Secret Injection
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Build with secret injection
+      env:
+        EMAILJS_SERVICE_ID: ${{ secrets.EMAILJS_SERVICE_ID }}
+        EMAILJS_TEMPLATE_ID: ${{ secrets.EMAILJS_TEMPLATE_ID }}
+        EMAILJS_PUBLIC_KEY: ${{ secrets.EMAILJS_PUBLIC_KEY }}
+      run: |
+        # Create build script
+        cat > build.js << 'EOF'
+        const fs = require('fs');
+        const path = require('path');
+        
+        // Read the original files
+        let indexHtml = fs.readFileSync('index.html', 'utf8');
+        let scriptJs = fs.readFileSync('script.js', 'utf8');
+        
+        // Replace placeholders with environment variables
+        indexHtml = indexHtml.replace('YOUR_PUBLIC_KEY', process.env.EMAILJS_PUBLIC_KEY);
+        scriptJs = scriptJs.replace('YOUR_SERVICE_ID', process.env.EMAILJS_SERVICE_ID);
+        scriptJs = scriptJs.replace('YOUR_TEMPLATE_ID', process.env.EMAILJS_TEMPLATE_ID);
+        scriptJs = scriptJs.replace('YOUR_PUBLIC_KEY', process.env.EMAILJS_PUBLIC_KEY);
+        
+        // Write the processed files
+        fs.writeFileSync('index.html', indexHtml);
+        fs.writeFileSync('script.js', scriptJs);
+        
+        console.log('✅ Secret injection completed successfully!');
+        EOF
+        
+        # Run the build script
+        node build.js
+        
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./

@@ -126,9 +126,9 @@ if (contactForm) {
         submitButton.disabled = true;
 
         // EmailJS configuration placeholders
-        const EMAILJS_SERVICE_ID = 'service_z7xkrdi';
-        const EMAILJS_TEMPLATE_ID = 'template_05cy9le';
-        const EMAILJS_PUBLIC_KEY = 'zvFCnJ4Z0w3tv5WYh';
+        const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';
+        const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
+        const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
 
         // Ensure EmailJS is initialized
         try {

@@ -1,199 +1,98 @@
-# Thushshan Rameswaran - Resume Website
+# Professional Resume Website
 
-[![CI Pipeline](https://github.com/thushshan-rameswaran/resume-website/actions/workflows/ci.yml/badge.svg)](https://github.com/thushshan-rameswaran/resume-website/actions/workflows/ci.yml)
-[![CD Pipeline](https://github.com/thushshan-rameswaran/resume-website/actions/workflows/cd.yml/badge.svg)](https://github.com/thushshan-rameswaran/resume-website/actions/workflows/cd.yml)
-[![Website](https://img.shields.io/website?url=https%3A//thushshan-rameswaran.github.io/resume-website)](https://thushshan-rameswaran.github.io/resume-website)
+A modern, responsive resume website built with HTML, CSS, and JavaScript, featuring EmailJS integration for contact form functionality.
 
-A modern, responsive resume website for Thushshan Rameswaran - Business Analyst & Software Developer.
+## Features
 
-## 🌟 Features
+- 🎨 Modern, responsive design with dark/light mode
+- 📧 Working contact form with EmailJS integration
+- 🔒 Secure deployment with GitHub Actions and secret injection
+- ♿ Accessibility compliant with ARIA labels and screen reader support
+- 📱 Mobile-first responsive design
+- ⚡ Optimized performance with debounced scroll handlers
 
-- **Responsive Design**: Perfect viewing experience across all devices
-- **Modern UI/UX**: Clean, professional design with smooth animations
-- **Interactive Elements**: Hover effects, smooth scrolling, and dynamic content
-- **Performance Optimized**: Fast loading times and optimized assets
-- **SEO Friendly**: Proper meta tags and semantic HTML structure
-- **Accessibility Compliant**: WCAG guidelines followed for inclusive design
+## Setup Instructions
 
-## 🚀 Live Demo
-
-Visit the live website: [https://thushshan-rameswaran.github.io/resume-website](https://thushshan-rameswaran.github.io/resume-website)
-
-## 🛠️ Technologies Used
-
-### Frontend
-- **HTML5**: Semantic markup and structure
-- **CSS3**: Modern styling with Flexbox and Grid
-- **JavaScript (ES6+)**: Interactive functionality and animations
-- **Font Awesome**: Icons and visual elements
-- **Google Fonts**: Typography (Inter font family)
-
-### Development & Deployment
-- **Node.js**: Development environment and build tools
-- **GitHub Actions**: CI/CD pipeline automation
-- **GitHub Pages**: Static site hosting
-- **ESLint**: JavaScript linting and code quality
-- **Stylelint**: CSS linting and formatting
-- **HTML Validate**: HTML structure validation
-- **Lighthouse**: Performance and accessibility auditing
-
-## 📋 Prerequisites
-
-- Node.js (v16.0.0 or higher)
-- npm (v8.0.0 or higher)
-- Git
-
-## 🏃‍♂️ Quick Start
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/thushshan-rameswaran/resume-website.git
-   cd resume-website
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start development server**
-   ```bash
-   npm start
-   ```
-
-4. **Open your browser**
-   Navigate to `http://localhost:3000`
-
-## 🔧 Available Scripts
-
-### Development
-- `npm start` - Start development server with live reload
-- `npm run lint` - Run all linting checks
-- `npm run lint:fix` - Fix auto-fixable linting issues
-
-### Testing
-- `npm test` - Run all tests (HTML, CSS, JS, Lighthouse)
-- `npm run test:html` - Validate HTML structure
-- `npm run test:css` - Lint CSS files
-- `npm run test:js` - Lint JavaScript files
-- `npm run test:lighthouse` - Run Lighthouse performance audit
-
-### Building
-- `npm run build` - Build optimized production files
-- `npm run clean` - Clean build directory
-- `npm run preview` - Preview built files locally
-
-### Deployment
-- `npm run deploy` - Deploy to GitHub Pages
-- `npm run security:audit` - Run security audit
-
-## 🔄 CI/CD Pipeline
-
-This project includes a comprehensive CI/CD pipeline with GitHub Actions:
-
-### Continuous Integration (CI)
-- **Code Quality**: ESLint, Stylelint, HTML validation
-- **Security**: npm audit for vulnerability scanning
-- **Performance**: Lighthouse audits for performance metrics
-- **Accessibility**: Automated accessibility testing
-- **Cross-browser**: Testing across Chrome, Firefox, and Edge
-- **Build Verification**: Ensures code builds successfully
-
-### Continuous Deployment (CD)
-- **Automated Deployment**: Deploys to GitHub Pages on main branch push
-- **Asset Optimization**: Minifies CSS and JavaScript
-- **Post-deployment Testing**: Validates live website functionality
-- **Performance Monitoring**: Lighthouse audits on live site
-
-### Pipeline Triggers
-- **Push to main**: Triggers full CI/CD pipeline
-- **Pull Requests**: Runs CI checks only
-- **Manual Dispatch**: Allows manual deployment
-
-## 📁 Project Structure
-
-```
-resume-website/
-├── .github/
-│   └── workflows/
-│       ├── ci.yml              # CI pipeline configuration
-│       └── cd.yml              # CD pipeline configuration
-├── dist/                       # Build output (auto-generated)
-├── reports/                    # Test reports (auto-generated)
-├── index.html                  # Main HTML file
-├── style.css                   # Stylesheet
-├── script.js                   # JavaScript functionality
-├── package.json                # Dependencies and scripts
-├── .eslintrc.json             # ESLint configuration
-├── .stylelintrc.json          # Stylelint configuration
-├── .htmlvalidate.json         # HTML validation rules
-├── lighthouserc.js            # Lighthouse CI configuration
-├── .gitignore                 # Git ignore rules
-└── README.md                  # Project documentation
+### 1. Fork and Clone
+```bash
+git clone https://github.com/your-username/resume-website.git
+cd resume-website
 ```
 
-## 🎨 Customization
+### 2. EmailJS Configuration
+1. Create an account at [EmailJS](https://www.emailjs.com/)
+2. Set up an email service (Gmail, Outlook, etc.)
+3. Create an email template with these variables:
+   - `{{from_name}}`
+   - `{{from_email}}`
+   - `{{subject}}`
+   - `{{message}}`
 
-### Colors
-The website uses CSS custom properties for easy theming:
-```css
-:root {
-    --primary-color: #2563eb;
-    --secondary-color: #1e40af;
-    --accent-color: #3b82f6;
-    /* ... more variables */
-}
+### 3. GitHub Secrets Setup
+Add these secrets to your GitHub repository:
+- `EMAILJS_SERVICE_ID`: Your EmailJS service ID
+- `EMAILJS_TEMPLATE_ID`: Your EmailJS template ID  
+- `EMAILJS_PUBLIC_KEY`: Your EmailJS public key
+
+**To add secrets:**
+1. Go to your GitHub repository
+2. Click **Settings** → **Secrets and variables** → **Actions**
+3. Click **New repository secret**
+4. Add each secret with the exact names above
+
+### 4. Local Development
+```bash
+# Install dependencies
+npm install
+
+# Start local server
+npm run dev
 ```
 
-### Content
-Update personal information in `index.html`:
-- Contact details
-- Professional experience
-- Education background
-- Skills and certifications
-- Project portfolio
+### 5. Deployment
+The site automatically deploys to GitHub Pages when you push to the `main` branch. GitHub Actions will:
+1. Read your secrets
+2. Inject them into the code
+3. Deploy the secure version
 
-## 📊 Performance Metrics
+## Customization
 
-The website is optimized for:
-- **Performance**: >90 Lighthouse score
-- **Accessibility**: >90 Lighthouse score
-- **Best Practices**: >90 Lighthouse score
-- **SEO**: >90 Lighthouse score
+### Personal Information
+Update the following files with your information:
+- `index.html`: Personal details, experience, education, projects
+- `style.css`: Colors, fonts, styling
+- `script.js`: Additional functionality
 
-## 🔒 Security
+### Contact Form
+The contact form is pre-configured to work with EmailJS. Make sure your EmailJS template matches the variable names in the code.
 
-- Regular dependency audits via npm audit
-- No sensitive data in repository
-- Secure deployment practices
-- HTTPS enforcement
+## Security Features
 
-## 🤝 Contributing
+- ✅ No hardcoded credentials in the repository
+- ✅ Secrets injected during deployment via GitHub Actions
+- ✅ Environment variables for local development
+- ✅ `.env` file excluded from version control
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## Technologies Used
 
-## 📝 License
+- HTML5
+- CSS3 (with CSS Variables)
+- Vanilla JavaScript
+- EmailJS
+- GitHub Actions
+- GitHub Pages
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## License
 
-## 📞 Contact
+MIT License - feel free to use this template for your own resume website!
 
-**Thushshan Rameswaran**
-- Email: thushshan123@gmail.com
-- Phone: 647-809-3316
-- LinkedIn: [thushshan-rameswaran](https://www.linkedin.com/in/thushshan-rameswaran/)
-- Location: Toronto, ON
+## Support
 
-## 🙏 Acknowledgments
-
-- University of Toronto for educational foundation
-- Toronto Transit Commission for professional development opportunity
-- Open source community for tools and inspiration
+If you encounter any issues, please check:
+1. EmailJS configuration
+2. GitHub Secrets setup
+3. GitHub Actions workflow logs
 
 ---
 
-⭐ **Star this repository if you found it helpful!**
+Built with ❤️ by Thushshan Rameswaran
