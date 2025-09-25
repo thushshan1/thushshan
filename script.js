@@ -150,7 +150,6 @@ if (contactForm) {
                 showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
                 this.reset();
             }).catch((error) => {
-                console.error('EmailJS error:', error);
                 showNotification('Failed to send message. Please try again later.', 'error');
             }).finally(() => {
                 submitButton.textContent = originalText;
